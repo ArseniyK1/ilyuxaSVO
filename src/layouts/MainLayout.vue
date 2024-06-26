@@ -2,8 +2,65 @@
   <q-layout class="bg-grey-1">
     <q-header elevated class="text-white" style="background: #5ECFAD" height-hint="61.59">
       <q-toolbar class="q-py-sm q-px-md">
-        <!-- Ваш код тулбара здесь -->
-        <!-- Убрал для краткости -->
+        <!--        <q-select-->
+        <!--          ref="search" dark dense standout use-input hide-selected-->
+        <!--          class="GL__toolbar-select"-->
+        <!--          color="black" :stack-label="false" label="Search or jump to..."-->
+        <!--          v-model="text" :options="filteredOptions" @filter="filter"-->
+        <!--          style="width: 300px"-->
+        <!--        >-->
+
+        <!--          <template v-slot:append>-->
+        <!--            <img src="https://cdn.quasar.dev/img/layout-gallery/img-github-search-key-slash.svg">-->
+        <!--          </template>-->
+
+        <!--          <template v-slot:no-option>-->
+        <!--            <q-item>-->
+        <!--              <q-item-section>-->
+        <!--                <div class="text-center">-->
+        <!--                  <q-spinner-pie-->
+        <!--                    color="grey-5"-->
+        <!--                    size="24px"-->
+        <!--                  />-->
+        <!--                </div>-->
+        <!--              </q-item-section>-->
+        <!--            </q-item>-->
+        <!--          </template>-->
+
+        <!--          <template v-slot:option="scope">-->
+        <!--            <q-item-->
+        <!--              v-bind="scope.itemProps"-->
+        <!--              class="GL__select-GL__menu-link"-->
+        <!--            >-->
+        <!--              <q-item-section side>-->
+        <!--                <q-icon name="collections_bookmark" />-->
+        <!--              </q-item-section>-->
+        <!--              <q-item-section>-->
+        <!--              </q-item-section>-->
+        <!--              <q-item-section side :class="{ 'default-type': !scope.opt.type }">-->
+        <!--                <q-btn outline dense no-caps text-color="blue-grey-5" size="12px" class="bg-grey-1 q-px-sm">-->
+        <!--                  {{ scope.opt.type || 'Jump to' }}-->
+        <!--                  <q-icon name="subdirectory_arrow_left" size="14px" />-->
+        <!--                </q-btn>-->
+        <!--              </q-item-section>-->
+        <!--            </q-item>-->
+        <!--          </template>-->
+        <!--        </q-select>-->
+
+        <div v-if="$q.screen.gt.sm" class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-bold row items-center no-wrap">
+          <a href="javascript:void(0)" class="text-white" @click="$router.push('/')">
+            Главная
+          </a>
+          <a href="javascript:void(0)" class="text-white" @click="$router.push('/reports')">
+            Отчеты
+          </a>
+          <a href="javascript:void(0)" class="text-white">
+            История
+          </a>
+
+        </div>
+
+        <q-space />
 
         <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
           <q-btn dense flat no-wrap>
@@ -16,7 +73,7 @@
               <q-list dense>
                 <q-item class="GL__menu-link-signed-in">
                   <q-item-section>
-                    <div>Аккаунт: <strong>{{ username }}</strong></div>
+                    <div>Аккаунт: <strong>petr</strong></div>
                   </q-item-section>
                 </q-item>
                 <q-separator />
@@ -49,28 +106,19 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from 'stores/auth'
 
 export default {
   name: 'MyLayout',
 
   setup() {
-    const authStore = useAuthStore()
     const username = ref('') // Инициализируем реактивную переменную для имени пользователя
 
     // Вызываем метод restoreAuthState при монтировании компонента
-    onMounted(() => {
-      authStore.restoreAuthState()
-      username.value = authStore.username // Обновляем имя пользователя после восстановления состояния
-    })
 
-    function logoutHandler() {
-      authStore.logout()
-    }
+
 
     return {
       username,
-      logoutHandler
     }
   }
 }

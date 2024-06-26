@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         this.userRole = user.role || 'user'
         this.username = user.username || ''
+        localStorage.clear()
         localStorage.setItem('authState', JSON.stringify({ isAuthenticated: true, userRole: this.userRole, username: this.username }))
         return true
       } else {
@@ -26,7 +27,7 @@ export const useAuthStore = defineStore('auth', {
       await this.addUserToDB({ username, login, password, role })
       return true
     },
-    logout() {
+      logout() {
       this.isAuthenticated = false
       this.userRole = 'user'
       this.username = ''

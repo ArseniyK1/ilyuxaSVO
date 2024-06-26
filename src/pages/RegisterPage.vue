@@ -16,7 +16,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import {useAuthStore} from "stores/auth";
+import { useAuthStore } from "stores/auth";
 
 export default defineComponent({
   name: 'RegisterPage',

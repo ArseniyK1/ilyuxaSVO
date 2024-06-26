@@ -51,10 +51,10 @@
           <a href="javascript:void(0)" class="text-white" @click="$router.push('/')">
             Главная
           </a>
-          <a href="javascript:void(0)" class="text-white" @click="$router.push('/reports')">
+          <a href="javascript:void(0)" class="text-white" @click="$router.push('/reports')" v-if="isLpr">
             Отчеты
           </a>
-          <a href="javascript:void(0)" class="text-white">
+          <a href="javascript:void(0)" class="text-white" @click="$router.push('/history')" v-if="isTeacher">
             История
           </a>
 
@@ -104,24 +104,20 @@
   </q-layout>
 </template>
 
-<script>
-import { ref, onMounted } from 'vue'
+<script setup>
+import {ref, onMounted, computed} from 'vue'
+import {useAuthStore} from "stores/auth";
+import {useRouter} from "vue-router";
+const username = ref('') // Инициализируем реактивную переменную для имени пользователя
+const authStore = useAuthStore()
+const router = useRouter()
+const isTeacher = computed(() => authStore.getRole === "teacher") // Проверяем, является ли пользователь преподавателем
+const isLpr = computed(() => authStore.getRole === "decision_maker") // Проверяем, является ли пользователь LPR
+const logoutHandler =async () => {
+  authStore.logout()
+  await router.push("/auth/login")
+};
 
-export default {
-  name: 'MyLayout',
-
-  setup() {
-    const username = ref('') // Инициализируем реактивную переменную для имени пользователя
-
-    // Вызываем метод restoreAuthState при монтировании компонента
-
-
-
-    return {
-      username,
-    }
-  }
-}
 </script>
 
 <style lang="sass">

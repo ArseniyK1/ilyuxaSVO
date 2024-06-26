@@ -2,9 +2,12 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
+
     children: [
-      { path: '', component: () => import('pages/MainPage.vue'), meta: { requiresAuth: true } },
-      { path: 'reports', component: () => import('pages/ReportsPage.vue'), meta: { requiresAuth: true } }
+      { path: '', component: () => import('pages/MainPage.vue') },
+      { path: 'reports', component: () => import('pages/ReportsPage.vue') },
+      { path: 'admin', component: () => import('pages/AdminPage.vue') },
+      { path: 'lpr', component: () => import('pages/LprPage.vue') }
     ]
   },
   {

@@ -14,7 +14,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import {useAuthStore} from "stores/auth";
+import { useAuthStore } from "stores/auth";
 
 export default defineComponent({
   name: 'LoginPage',
@@ -26,8 +26,16 @@ export default defineComponent({
 
     const loginUser = async () => {
       const success = await authStore.loginUser(login.value, password.value)
+      console.log(success)
+      const role = JSON.parse(localStorage.getItem("authState"))?.userRole
+      console.log("role", role)
       if (success) {
-        router.push('/')
+        if (role === 'teacher') {
+          await router.push("/admin")
+        }
+        if (role === 'decision_maker') {
+          await router.push("/lpr")
+        }
       } else {
         alert('Неправильный логин или пароль!')
       }

@@ -4,8 +4,15 @@
       <q-input v-model="username" label="Имя" required />
       <q-input v-model="login" label="Логин" required />
       <q-input v-model="password" label="Пароль" type="password" required />
-      <q-checkbox v-model="isTeacher" label="Зарегистрироваться как преподаватель" />
-      <q-checkbox v-model="isDecisionMaker" label="Зарегистрироваться как Лицо Принимающее Решения" />
+      <q-checkbox
+        v-model="isTeacher"
+        label="Зарегистрироваться как преподаватель"
+      />
+      <q-checkbox
+        v-model="isDecisionMaker"
+        label="Зарегистрироваться как Лицо Принимающее Решения"
+      />
+      <q-checkbox v-model="isAdmin" label="Зарегистрироваться как Админ" />
       <div class="row justify-center q-gutter-md">
         <q-btn label="Регистрация" type="submit" color="primary" />
       </div>
@@ -14,33 +21,40 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "stores/auth";
 
 export default defineComponent({
-  name: 'RegisterPage',
+  name: "RegisterPage",
   setup() {
-    const username = ref('')
-    const login = ref('')
-    const password = ref('')
-    const isTeacher = ref(false)
-    const isDecisionMaker = ref(false)
-    const authStore = useAuthStore()
-    const router = useRouter()
+    const username = ref("");
+    const login = ref("");
+    const password = ref("");
+    const isTeacher = ref(false);
+    const isDecisionMaker = ref(false);
+    const isAdmin = ref(false);
+    const authStore = useAuthStore();
+    const router = useRouter();
 
     const registerUser = async () => {
-      let role = 'user'
-      if (isTeacher.value) role = 'teacher'
-      if (isDecisionMaker.value) role = 'decision_maker'
-      await authStore.registerUser(username.value, login.value, password.value, role)
-      await router.push('/auth/login')
-    }
+      let role = "user";
+      if (isTeacher.value) role = "teacher";
+      if (isDecisionMaker.value) role = "decision_maker";
+      if (isAdmin.value) role = "admin_acc";
+      await authStore.registerUser(
+        username.value,
+        login.value,
+        password.value,
+        role
+      );
+      await router.push("/auth/login");
+    };
 
     const onSubmit = (event) => {
-      event.preventDefault()
-      registerUser()
-    }
+      event.preventDefault();
+      registerUser();
+    };
 
     return {
       username,
@@ -48,9 +62,10 @@ export default defineComponent({
       password,
       isTeacher,
       isDecisionMaker,
+      isAdmin,
       onSubmit,
-      registerUser
-    }
-  }
-})
+      registerUser,
+    };
+  },
+});
 </script>

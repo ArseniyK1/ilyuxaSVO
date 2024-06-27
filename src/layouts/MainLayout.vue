@@ -1,6 +1,11 @@
 <template>
   <q-layout class="bg-grey-1">
-    <q-header elevated class="text-white" style="background: #5ECFAD" height-hint="61.59">
+    <q-header
+      elevated
+      class="text-white"
+      style="background: #5ecfad"
+      height-hint="61.59"
+    >
       <q-toolbar class="q-py-sm q-px-md">
         <!--        <q-select-->
         <!--          ref="search" dark dense standout use-input hide-selected-->
@@ -47,17 +52,31 @@
         <!--          </template>-->
         <!--        </q-select>-->
 
-        <div v-if="$q.screen.gt.sm" class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-bold row items-center no-wrap">
-          <a href="javascript:void(0)" class="text-white" @click="$router.push('/')">
+        <div
+          v-if="$q.screen.gt.sm"
+          class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-bold row items-center no-wrap"
+        >
+          <a
+            href="javascript:void(0)"
+            class="text-white"
+            @click="$router.push('/')"
+          >
             Главная
           </a>
-          <a href="javascript:void(0)" class="text-white" @click="$router.push('/reports')" v-if="isLpr">
+          <a
+            href="javascript:void(0)"
+            class="text-white"
+            @click="$router.push('/reports')"
+          >
             Отчеты
           </a>
-          <a href="javascript:void(0)" class="text-white" @click="$router.push('/history')" v-if="isTeacher">
+          <a
+            href="javascript:void(0)"
+            class="text-white"
+            @click="$router.push('/history')"
+          >
             История
           </a>
-
         </div>
 
         <q-space />
@@ -65,7 +84,7 @@
         <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
           <q-btn dense flat no-wrap>
             <q-avatar rounded size="20px">
-              <img src="https://cdn.quasar.dev/img/avatar3.jpg">
+              <img src="https://cdn.quasar.dev/img/avatar3.jpg" />
             </q-avatar>
             <q-icon name="arrow_drop_down" size="16px" />
 
@@ -73,11 +92,17 @@
               <q-list dense>
                 <q-item class="GL__menu-link-signed-in">
                   <q-item-section>
-                    <div>Аккаунт: <strong>petr</strong></div>
+                    <div>
+                      Аккаунт: <strong>{{ username }}</strong>
+                    </div>
                   </q-item-section>
                 </q-item>
                 <q-separator />
-                <q-item clickable class="GL__menu-link">
+                <q-item
+                  clickable
+                  class="GL__menu-link"
+                  @click="$router.push('/admin')"
+                >
                   <q-item-section>Открыть профиль</q-item-section>
                 </q-item>
                 <q-item clickable class="GL__menu-link" @click="logoutHandler">
@@ -94,7 +119,7 @@
       <router-view />
     </q-page-container>
 
-    <q-footer elevated class="text-white" style="background:#5ECFAD" >
+    <q-footer elevated class="text-white" style="background: #5ecfad">
       <q-toolbar>
         <q-toolbar-title class="text-center">
           <div class="text-h6">ЛГТУ, 2024</div>
@@ -105,19 +130,19 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from 'vue'
-import {useAuthStore} from "stores/auth";
-import {useRouter} from "vue-router";
-const username = ref('') // Инициализируем реактивную переменную для имени пользователя
-const authStore = useAuthStore()
-const router = useRouter()
-const isTeacher = computed(() => authStore.getRole === "teacher") // Проверяем, является ли пользователь преподавателем
-const isLpr = computed(() => authStore.getRole === "decision_maker") // Проверяем, является ли пользователь LPR
-const logoutHandler =async () => {
-  authStore.logout()
-  await router.push("/auth/login")
+import { ref, onMounted, computed } from "vue";
+import { useAuthStore } from "stores/auth";
+import { useRouter } from "vue-router";
+const username = ref(""); // Инициализируем реактивную переменную для имени пользователя
+const authStore = useAuthStore();
+const router = useRouter();
+const isAdmin = computed(() => authStore.getRole === "admin_acc");
+const isTeacher = computed(() => authStore.getRole === "teacher"); // Проверяем, является ли пользователь преподавателем
+const isLpr = computed(() => authStore.getRole === "decision_maker"); // Проверяем, является ли пользователь LPR
+const logoutHandler = async () => {
+  authStore.logout();
+  await router.push("/auth/login");
 };
-
 </script>
 
 <style lang="sass">

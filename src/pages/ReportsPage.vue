@@ -109,6 +109,28 @@
       </template>
     </q-table>
 
+    <!-- Новая таблица -->
+    <q-table
+      v-if="showNewTable"
+      :rows="newTableRows"
+      :columns="columns"
+      row-key="index"
+      :pagination="{ rowsPerPage: 0 }"
+      class="q-mt-md"
+      style="height: 20% !important"
+    >
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td v-for="col in columns" :key="col.name" :props="props">
+            <span v-if="props.row[col.field] !== undefined">
+              {{ props.row[col.field] }}
+            </span>
+            <span v-else>—</span>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+
     <div class="text-center q-mt-md">
       <q-btn
         icon="add"
@@ -131,13 +153,83 @@
             :options="chartOptions"
             label="Тип диаграммы"
             outlined
-          />
+          >
+            <template v-slot:append>
+              <q-btn
+                @click.stop="selectedChart = ''"
+                flat
+                size="md"
+                v-if="selectedChart"
+                icon="close"
+              ></q-btn>
+            </template>
+          </q-select>
+        </q-card-section>
+
+        <q-card-section>
+          <q-select
+            v-model="days"
+            :options="daysOptions"
+            label="Выберите дни"
+            v-if="selectedChart"
+            outlined
+          >
+            <template v-slot:append>
+              <q-btn
+                @click.stop="days = ''"
+                flat
+                size="md"
+                v-if="days"
+                icon="close"
+              ></q-btn>
+            </template>
+          </q-select>
+        </q-card-section>
+
+        <q-card-section>
+          <q-select
+            v-model="auditories"
+            :options="auditoriesOptions"
+            label="Выберите аудитории"
+            v-if="selectedChart"
+            outlined
+          >
+            <template v-slot:append>
+              <q-btn
+                @click.stop="auditories = ''"
+                flat
+                size="md"
+                v-if="auditories"
+                icon="close"
+              ></q-btn>
+            </template>
+          </q-select>
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn flat label="Отмена" color="primary" v-close-popup />
           <q-btn flat label="Выбрать" color="primary" @click="selectChart" />
         </q-card-actions>
+
+        <q-card-section v-if="showChartTable">
+          <q-table
+            :rows="chartTableData"
+            :columns="columns"
+            row-key="auditorium"
+            :pagination="{ rowsPerPage: 0 }"
+          >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td v-for="col in columns" :key="col.name" :props="props">
+                  <span v-if="props.row[col.field] !== undefined">
+                    {{ props.row[col.field] }}
+                  </span>
+                  <span v-else>—</span>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+        </q-card-section>
       </q-card>
     </q-dialog>
 
@@ -210,9 +302,33 @@ export default defineComponent({
 
     const freeRows1 = ref([]);
     const freeRows2 = ref([]);
+    const newTableRows = ref([]);
     const showFreeTables = ref(false);
     const showDialog = ref(false);
+    const showNewTable = ref(false);
     const selectedChart = ref(null);
+    const days = ref("");
+    const auditories = ref("");
+    const auditoriesOptions = [
+      { label: "Все аудитории", value: "all" },
+      { label: "Аудитория 349", value: "349" },
+      { label: "Аудитория 350", value: "350" },
+      { label: "Аудитория 351", value: "351" },
+      { label: "Аудитория 353", value: "353" },
+      { label: "Аудитория 357", value: "357" },
+      { label: "Аудитория 360", value: "360" },
+      { label: "Аудитория 362", value: "362" },
+      { label: "Аудитория 363", value: "363" },
+    ];
+    const daysOptions = [
+      { label: "Все дни", value: "all" },
+      { label: "Понедельник", value: "pn" },
+      { label: "Вторник", value: "vt" },
+      { label: "Среда", value: "sr" },
+      { label: "Четверг", value: "cht" },
+      { label: "Пятница", value: "pt" },
+      { label: "Суббота", value: "sb" },
+    ];
     const chartOptions = [
       { label: "Специальность (аудитории/дни)", value: "specialty" },
       { label: "Подразделение (аудитории/дни)", value: "department" },
@@ -241,6 +357,9 @@ export default defineComponent({
 
       if (selectedChart.value === "freeAuditoriums") {
         generateFreeAuditoriumsData();
+      } else {
+        generateFakeData();
+        showNewTable.value = true;
       }
     };
 
@@ -268,17 +387,60 @@ export default defineComponent({
       showFreeTables.value = true;
     };
 
-    const downloadPDF = () => {
-      const element = document.querySelector(".q-page");
-      const options = {
-        margin: 1,
-        filename: "report.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-      };
+    const generateFakeData = () => {
+      const fakeData = [
+        {
+          auditorium: 349,
+          pn: "Фейк 1",
+          vt: "Фейк 2",
+          sr: "Фейк 3",
+          cht: "Фейк 4",
+          pt: "Фейк 5",
+          sb: "Фейк 6",
+        },
+        {
+          auditorium: 350,
+          pn: "Фейк 1",
+          vt: "Фейк 2",
+          sr: "Фейк 3",
+          cht: "Фейк 4",
+          pt: "Фейк 5",
+          sb: "Фейк 6",
+        },
+        {
+          auditorium: 351,
+          pn: "Фейк 1",
+          vt: "Фейк 2",
+          sr: "Фейк 3",
+          cht: "Фейк 4",
+          pt: "Фейк 5",
+          sb: "Фейк 6",
+        },
+        {
+          auditorium: 353,
+          pn: "Фейк 1",
+          vt: "Фейк 2",
+          sr: "Фейк 3",
+          cht: "Фейк 4",
+          pt: "Фейк 5",
+          sb: "Фейк 6",
+        },
+        {
+          auditorium: 357,
+          pn: "Фейк 1",
+          vt: "Фейк 2",
+          sr: "Фейк 3",
+          cht: "Фейк 4",
+          pt: "Фейк 5",
+          sb: "Фейк 6",
+        },
+      ];
+      newTableRows.value = fakeData;
+    };
 
-      html2pdf().from(element).set(options).save();
+    const downloadPDF = () => {
+      const element = document.getElementById("table-section");
+      html2pdf().from(element).save("table.pdf");
     };
 
     return {
@@ -287,16 +449,24 @@ export default defineComponent({
       rows2,
       freeRows1,
       freeRows2,
-      getCellClass,
-      getFreeCellClass,
+      showFreeTables,
       showDialog,
       selectedChart,
+      days,
+      auditories,
+      auditoriesOptions,
+      daysOptions,
       chartOptions,
-      selectChart,
-      showFreeTables,
       showHistogram,
       histogramData,
+      getCellClass,
+      getFreeCellClass,
+      selectChart,
+      generateFreeAuditoriumsData,
+      generateFakeData,
       downloadPDF,
+      showNewTable,
+      newTableRows,
     };
   },
 });
